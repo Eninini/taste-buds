@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import RecipeList from './components/RecipeList';
+import RecipeDetail from './components/RecipeItem';
+import LoadingBar from './components/LoadingBar';
+import axios from 'axios';
 
-function App() {
+const App = () => {
+  const [progress, setProgress] = useState(0);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Router>
+        <Navbar />
+        <LoadingBar
+          height={3}
+          color='#f11946'
+          progress={progress}
+        />
+        <Routes>
+          <Route exact path="/" element={<RecipeList setProgress={setProgress} apiKey={process.env.REACT_APP_NEWS_API_KEY} key="general" query="all"  />} />
+          <Route exact path="/main course" element={<RecipeList setProgress={setProgress} apiKey={process.env.REACT_APP_NEWS_API_KEY} key="mainCourse" query="main course" />} />
+          <Route exact path="/dessert" element={<RecipeList setProgress={setProgress} apiKey={process.env.REACT_APP_NEWS_API_KEY} key="dessert"  query="dessert" />} />
+          <Route exact path="/starters" element={<RecipeList setProgress={setProgress} apiKey={process.env.REACT_APP_NEWS_API_KEY} key="starters"  query="starters" />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
 
 export default App;
+
