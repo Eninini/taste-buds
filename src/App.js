@@ -21,7 +21,7 @@ const App = () => {
         <Routes>
           <Route exact path="/" element={<RecipeList setProgress={setProgress} apiKey={process.env.REACT_APP_NEWS_API_KEY} key="general" query="all"  />} />
           <Route exact path="/main course" element={<RecipeList setProgress={setProgress} apiKey={process.env.REACT_APP_NEWS_API_KEY} key="mainCourse" query="main course" />} />
-          <Route exact path="/dessert" element={<RecipeList setProgress={setProgress} apiKey={process.env.REACT_APP_NEWS_API_KEY} key="dessert"  query="dessert" />} />
+          <Route exact path="/desserts" element={<RecipeList setProgress={setProgress} apiKey={process.env.REACT_APP_NEWS_API_KEY} key="desserts"  query="desserts" />} />
           <Route exact path="/starters" element={<RecipeList setProgress={setProgress} apiKey={process.env.REACT_APP_NEWS_API_KEY} key="starters"  query="starters" />} />
         </Routes>
       </Router>

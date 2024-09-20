@@ -19,7 +19,7 @@ const Navbar = () => {
               <Link className="nav-link" style={{ color: '#DBE2E9' }} to="/main course">Main Course</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" style={{ color: '#DBE2E9' }} to="/dessert">Dessert</Link>
+              <Link className="nav-link" style={{ color: '#DBE2E9' }} to="/desserts">Dessert</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" style={{ color: '#DBE2E9' }} to="/starters">Starters</Link>
