@@ -5,7 +5,8 @@ dotenv.config();  // This line should be right after importing dotenv
 
 // Replace the following with your Atlas connection string
 const uri = process.env.MONGO_URI;
-
+console.log("URI is")
+console.log(uri)
 const client = new MongoClient(uri);
 // const recipeSchema = new mongoose.Schema({
 //     title: String,

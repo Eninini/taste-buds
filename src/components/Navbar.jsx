@@ -16,7 +16,7 @@ const Navbar = () => {
               <Link className="nav-link active" style={{ color: '#DBE2E9' }} aria-current="page" to="/">All Recipes</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" style={{ color: '#DBE2E9' }} to="/main course">Main Course</Link>
+              <Link className="nav-link" style={{ color: '#DBE2E9' }} to="/main-course">Main Course</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" style={{ color: '#DBE2E9' }} to="/desserts">Dessert</Link>

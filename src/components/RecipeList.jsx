@@ -2,101 +2,79 @@ import React, { useEffect, useState } from 'react';
 import RecipeItem from './RecipeItem';
 import Spinner from './Spinner';
 import PropTypes from 'prop-types';
-import InfiniteScroll from "react-infinite-scroll-component";
+import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
 
-// export const RECIPE_URL = 'http://localhost:5000/desserts'
 const RecipeList = (props) => {
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [recipes, setRecipes] = useState([]);  // All recipes loaded initially
+  const [displayedRecipes, setDisplayedRecipes] = useState([]); // Subset of recipes to display
+  const [loading, setLoading] = useState(true); // Loading for initial API call
   const [page, setPage] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
+  const [itemsPerPage] = useState(10); // Number of items to display per scroll
 
   const updateRecipes = async () => {
     props.setProgress(10);
-    try{
-      // if(props.query=="dessert"){
-        const response= await axios.get(`http://localhost:5004/${props.query}`);
-      // }
-        // const response= await axios.get(RECIPE_URL,{
-        //     // headers:{'X-Api-Key':process.env.REACT_APP_RECIPE_API_KEY},
-        //     params: {query: props.query, offset: 0}
-        // });
-    
-    // let parsedData = await data.json();
-    let parsedData= response.data.map((item)=>({
-      d: item._id,
+    setLoading(true); // Show spinner while the data is loading
+
+    try {
+      console.log(`Calling the query ${props.query}`);
+      const response = await axios.get(`http://localhost:5005/${props.query}`);
+      console.log(`Called the query ${props.query}`);
+      console.log(response);
+
+      // Parse the data
+      const parsedData = response.data.map((item) => ({
+        d: item._id,
         title: item.title,
-        ingredients: item.ingredients.split('|'),
+        ingredients: item.ingredients,
         servings: item.servings,
-        instructions: item.instructions.split('.')
-    }));
-    setRecipes(parsedData);
-    setTotalResults(parsedData.length);
-    setLoading(false);
-     props.setProgress(100);
+        instructions: item.instructions,
+      }));
+
+      setRecipes(parsedData);  // Store all recipes
+      setDisplayedRecipes(parsedData.slice(0, itemsPerPage));  // Display the first set of recipes
+      setLoading(false);  // Stop spinner once data is loaded
+      props.setProgress(100);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+      setLoading(false);
+      props.setProgress(100);
     }
-    catch (error) {
-        console.error('Error fetching recipes:', error);
-        setLoading(false);
-        props.setProgress(100);
-      }
-    
   };
 
-  
-
-//   const fetchMoreData = async () => {
-//     const url = `https://api.example.com/recipes?page=${page + 1}&pageSize=${props.pageSize}`;
-//     setPage(page + 1);
-//     let data = await fetch(url);
-//     let parsedData = await data.json();
-//     setRecipes(recipes.concat(parsedData.recipes));
-//     setTotalResults(parsedData.totalResults);
-//   };
-
-const fetchMoreData = async () => {
+  const fetchMoreData = () => {
     const newPage = page + 1;
     setPage(newPage);
-    try {
-      updateRecipes();
-      // const response = await axios.get(RECIPE_URL, {
-      //   headers: { 'X-Api-Key': process.env.REACT_APP_RECIPE_API_KEY },
-      //   params: { query: props.query, offset: newPage * 10 }
-      // });
 
-      // setRecipes(recipes.concat(response.data));
-      // setTotalResults(recipes.length);
-    } catch (error) {
-      console.error('Error fetching more recipes:', error);
-    }
+    // Add more recipes to the displayed data from the already loaded data
+    const newRecipes = recipes.slice(0, newPage * itemsPerPage);
+    setDisplayedRecipes(newRecipes);
   };
 
   useEffect(() => {
     updateRecipes();
   }, [props.query]);
 
-  
   return (
     <div>
       <h2 className="text-center" style={{ marginTop: '15vh' }}>
-        {/* {props.category.charAt(0).toUpperCase() + props.category.slice(1)}  */}
-         Top Recipes
+        Top Recipes
       </h2>
-      {loading && <Spinner />}
+
+      {loading && <Spinner />} {/* Show spinner only during the initial load */}
+
       <InfiniteScroll
-        dataLength={recipes.length}
-        next={fetchMoreData}
-        hasMore={true}
-        loader={<Spinner />}
+        dataLength={displayedRecipes.length}  // Length of currently displayed recipes
+        next={fetchMoreData}  // Function to fetch more data from already fetched data
+        hasMore={displayedRecipes.length < recipes.length}  // Check if there's more data to display
+        loader={<Spinner />}  // Spinner for when fetching more data (scrolling)
         endMessage={<p>That's all hun</p>}
       >
         <div className="container">
           <div className="row">
-            {recipes.map((recipe) => (
+            {displayedRecipes.map((recipe) => (
               <div className="col-md-4" key={recipe.d}>
-                {console.log(recipe.d)}
-                <RecipeItem title={recipe.title} description={recipe.ingredients}  />
+                <RecipeItem title={recipe.title} description={recipe.ingredients} />
               </div>
             ))}
           </div>
@@ -110,7 +88,5 @@ RecipeList.propTypes = {
   setProgress: PropTypes.func.isRequired,
   query: PropTypes.string.isRequired,
 };
-
-
 
 export default RecipeList;

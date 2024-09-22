@@ -16,10 +16,11 @@ app.use(express.urlencoded({ extended: true }));
 const recipeSchema = new mongoose.Schema({
   _id: String,
   title: String,
-  ingredients: String,
+  ingredients: [String],  // Defining ingredients as an array of strings
   servings: String,
-  instructions: String
+  instructions: [String]  // Defining instructions as an array of strings
 });
+
 
 // const RECIPE_URL = 'https://api.api-ninjas.com/v1/recipe';
 // console.log(RECIPE_URL);
@@ -35,7 +36,8 @@ mongoose.connect(process.env.MONGO_URI, {
 
 
 const Dessert = mongoose.model('dessert', recipeSchema);
-const MainCourse= mongoose.model('main course', recipeSchema);
+const MainCourse = mongoose.model('MainCourse', recipeSchema, 'main course');
+
 const Starters= mongoose.model('starters', recipeSchema);
 
 // const response= async()=> {await axios.get(RECIPE_URL,{
@@ -64,8 +66,11 @@ const Starters= mongoose.model('starters', recipeSchema);
 // // });
 
 app.get('/desserts', async (req, res) => {
+ console.log("Calling dessers API")
+ 
   try {
-    const recipes = await Dessert.find();
+    const recipes = await Dessert.find({});
+    console.log(recipes)
     res.status(200).json(recipes);
   } catch (error) {
     console.error('Error fetching recipes from MongoDB:', error);
@@ -73,10 +78,12 @@ app.get('/desserts', async (req, res) => {
   }
 });
 
-app.get('/main course', async(req,res)=>{
-
+app.get('/main-course', async(req,res)=>{
+  console.log("Calling main-course API")
   try {
-    const recipes = await MainCourse.find();
+    const recipes = await MainCourse.find({});
+    console.log("recipes is:")
+    console.log(recipes)
     res.status(200).json(recipes);
   } catch (error) {
     console.error('Error fetching recipes from MongoDB:', error);
@@ -85,8 +92,11 @@ app.get('/main course', async(req,res)=>{
 })
 
 app.get('/starters', async(req,res)=>{
+  console.log("calling starter")
+  const servings = "1 Servings"
   try{
-    const recipes = await Starters.find();
+    const recipes = await Starters.find({servings});
+    console.log(recipes)
     res.status(200).json(recipes);
   }
   catch(error){
